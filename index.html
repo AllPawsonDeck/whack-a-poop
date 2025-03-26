@@ -73,7 +73,11 @@
   <div id="score">Score: 0</div>
   <div id="gameContainer"></div>
 
-  <audio id="splatSound" src="https://www.soundjay.com/human/sounds/fart-01.mp3" preload="auto"></audio>
+  <!-- Sound effect (short) -->
+  <audio id="splatSound" src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-splat-2618.mp3" preload="auto"></audio>
+
+  <!-- Confetti script -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
     const gameContainer = document.getElementById('gameContainer');
@@ -108,7 +112,7 @@
       const index = Math.floor(Math.random() * holes.length);
       holes.forEach(hole => hole.innerHTML = '');
       const poop = document.createElement('div');
-      poop.innerHTML = '&#128169;'; // 💩 emoji using Unicode for compatibility
+      poop.innerHTML = '&#128169;';
       poop.classList.add('bouncy');
       poop.style.cursor = 'pointer';
       poop.style.fontSize = '48px';
@@ -117,10 +121,18 @@
 
       poop.addEventListener('click', () => {
         score++;
-        document.getElementById('splatSound').play().catch(() => {}); // Prevent autoplay errors
+        document.getElementById('splatSound').play().catch(() => {});
         scoreDisplay.innerText = `Score: ${score}`;
         holes[index].innerHTML = '';
       });
+    }
+
+    function createCertificate() {
+      const cert = document.createElement('a');
+      cert.href = `data:text/plain;charset=utf-8,${encodeURIComponent("CERTIFICATE OF POOP-SMASHING EXCELLENCE\n\nAwarded to: YOU\nScore: " + score + "\nStatus: SUPER POOPER SMASHER!")}`;
+      cert.download = "poop-smashing-certificate.txt";
+      cert.innerText = "Download your Poop Smasher Certificate!";
+      document.body.appendChild(cert);
     }
 
     function endGame() {
@@ -130,6 +142,7 @@
       let message = '';
       if (score > 25) {
         message = "You are a super-pooper-smasher!";
+        confetti();
       } else if (score > 20) {
         message = "Yes! You are ready for a puppy!";
       } else {
@@ -154,6 +167,8 @@
       adoptLink.innerText = 'Visit All Paws on Deck to meet your match!';
       document.body.appendChild(adoptLink);
 
+      if (score > 20) createCertificate();
+
       const playAgain = document.createElement('button');
       playAgain.innerText = 'Play Again';
       playAgain.onclick = () => location.reload();
@@ -164,9 +179,7 @@
       randomPoop();
       timeLeft--;
       timerDisplay.innerText = `Time left: ${timeLeft}s`;
-      if (timeLeft <= 0) {
-        endGame();
-      }
+      if (timeLeft <= 0) endGame();
     }, 1000);
   </script>
 </body>
