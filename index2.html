@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Smash-a-Poop</title>
+<style>
+body { text-align: center; font-family: Arial, sans-serif; }
+#gameContainer { display: grid; grid-template-columns: repeat(3, 100px); gap: 10px; margin: 20px auto; width: 320px; }
+.hole { width: 100px; height: 100px; background: lightgray; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+</style>
+</head>
+<body>
+<h1>Smash-a-Poop</h1>
+<p>Click the 💩 to score points!</p>
+<div id="score">Score: 0</div>
+<div id="gameContainer"></div>
+
+<script>
+const gameContainer = document.getElementById('gameContainer');
+let score = 0;
+
+function createHole() {
+const hole = document.createElement('div');
+hole.classList.add('hole');
+gameContainer.appendChild(hole);
+return hole;
+}
+
+const holes = Array.from({ length: 9 }, createHole);
+
+function randomPoop() {
+const index = Math.floor(Math.random() * holes.length);
+holes.forEach(hole => hole.innerHTML = '');
+const poop = document.createElement('div');
+poop.innerHTML = '💩';
+poop.style.cursor = 'pointer';
+holes[index].appendChild(poop);
+
+poop.addEventListener('click', () => {
+score++;
+document.getElementById('score').innerText = `Score: ${score}`;
+holes[index].innerHTML = '';
+});
+}
+
+setInterval(randomPoop, 1000);
+</script>
+</body>
+</html>
