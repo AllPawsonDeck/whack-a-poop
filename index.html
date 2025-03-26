@@ -25,28 +25,23 @@
       box-shadow: 2px 2px 0 #000;
     }
 
-    .start-screen {
-      max-width: 400px;
-      margin: auto;
+    .difficulty-btn {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 5px;
+      border: 2px solid #222;
+      background-color: #f44336;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 10px;
+      box-shadow: 2px 2px 0 #000;
+      transition: transform 0.1s ease;
     }
 
-    .difficulty-btn {
-  padding: 10px 20px;
-  font-size: 18px;
-  margin: 5px;
-  border: 2px solid #222;
-  background-color: #f44336;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 10px;
-  box-shadow: 2px 2px 0 #000;
-  transition: transform 0.1s ease;
-}
-
-.difficulty-btn:hover {
-  transform: scale(1.05);
-  background-color: #d32f2f;
-}
+    .difficulty-btn:hover {
+      transform: scale(1.05);
+      background-color: #d32f2f;
+    }
 
     input {
       padding: 10px;
@@ -115,7 +110,7 @@
 <body>
   <div id="logo">Smash-a-Poop</div>
 
-  <div class="start-screen" id="startScreen">
+  <div id="startScreen">
     <h2>Select difficulty:</h2>
     <button class="difficulty-btn" onclick="startGame(60)">Easy<br>60 sec</button>
     <button class="difficulty-btn" onclick="startGame(30)">Medium<br>30 sec</button>
@@ -125,19 +120,11 @@
     <input type="text" id="playerName" placeholder="Your name">
   </div>
 
- <audio id="splatSound" src="https://soundbible.com/mp3/Poof-SoundBible.com-787431188.mp3" preload="auto"></audio>
+  <audio id="splatSound" src="https://soundbible.com/mp3/Poof-SoundBible.com-787431188.mp3" preload="auto"></audio>
   <div id="score"></div>
   <div id="gameContainer"></div>
 
   <script>
-  function playSplatSound() {
-  const splat = document.getElementById('splatSound');
-  if (splat.readyState >= 2) {
-    splat.pause();
-    splat.currentTime = 0;
-    splat.play().catch((e) => console.log("Sound blocked:", e));
-  }
-}
     const gameContainer = document.getElementById('gameContainer');
     const scoreDisplay = document.getElementById('score');
     const playerNameInput = document.getElementById('playerName');
@@ -154,6 +141,14 @@
     let interval;
     const holes = [];
 
+    function playSplatSound() {
+      if (splatSound.readyState >= 2) {
+        splatSound.pause();
+        splatSound.currentTime = 0;
+        splatSound.play().catch((e) => console.log("Sound blocked:", e));
+      }
+    }
+
     function startGame(duration) {
       const name = playerNameInput.value.trim();
       if (!name) {
@@ -166,6 +161,7 @@
       timeLeft = duration;
       score = 0;
       scoreDisplay.innerText = `Score: 0`;
+
       timerDisplay = document.createElement('div');
       timerDisplay.innerText = `Time left: ${timeLeft}s`;
       document.body.insertBefore(timerDisplay, gameContainer);
@@ -198,12 +194,7 @@
       holes[index].appendChild(poop);
 
       poop.addEventListener('click', () => {
-  playSplatSound();
-  score++;
-  scoreDisplay.innerText = `Score: ${score}`;
-  holes[index].innerHTML = '';
-});
-}
+        playSplatSound();
         score++;
         scoreDisplay.innerText = `Score: ${score}`;
         holes[index].innerHTML = '';
@@ -213,8 +204,8 @@
     function endGame(name) {
       clearInterval(interval);
       gameContainer.innerHTML = '';
-      timerDisplay.innerText = "Game Over!";
       gameContainer.style.display = 'none';
+      timerDisplay.innerText = "Game Over!";
 
       let message = '';
       if (score > 25) {
