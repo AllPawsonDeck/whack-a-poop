@@ -117,11 +117,19 @@
     <input type="text" id="playerName" placeholder="Your name">
   </div>
 
-  <audio id="splatSound" src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-splat-2618.mp3" preload="auto"></audio>
+ <audio id="splatSound" src="https://soundbible.com/mp3/Poof-SoundBible.com-787431188.mp3" preload="auto"></audio>
   <div id="score"></div>
   <div id="gameContainer"></div>
 
   <script>
+  function playSplatSound() {
+  const splat = document.getElementById('splatSound');
+  if (splat.readyState >= 2) {
+    splat.pause();
+    splat.currentTime = 0;
+    splat.play().catch((e) => console.log("Sound blocked:", e));
+  }
+}
     const gameContainer = document.getElementById('gameContainer');
     const scoreDisplay = document.getElementById('score');
     const playerNameInput = document.getElementById('playerName');
@@ -182,8 +190,12 @@
       holes[index].appendChild(poop);
 
       poop.addEventListener('click', () => {
-        splatSound.currentTime = 0;
-        splatSound.play().catch(() => {});
+  playSplatSound();
+  score++;
+  scoreDisplay.innerText = `Score: ${score}`;
+  holes[index].innerHTML = '';
+});
+}
         score++;
         scoreDisplay.innerText = `Score: ${score}`;
         holes[index].innerHTML = '';
