@@ -121,7 +121,11 @@
 
       poop.addEventListener('click', () => {
         score++;
-        document.getElementById('splatSound').play().catch(() => {});
+        const splatSound = document.getElementById('splatSound');
+if (splatSound.paused) {
+  splatSound.currentTime = 0;
+  splatSound.play().catch(() => {});
+}
         scoreDisplay.innerText = `Score: ${score}`;
         holes[index].innerHTML = '';
       });
