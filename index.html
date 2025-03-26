@@ -1,155 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8" />
- <title>Smash-a-Poop</title>
- <style>
- body {
- text-align: center;
- font-family: Arial, sans-serif;
- }
+  <meta charset="UTF-8" />
+  <title>Smash-a-Poop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji;
+      padding: 10px;
+    }
 
- #gameContainer {
- display: grid;
- grid-template-columns: repeat(3, 100px);
- gap: 10px;
- margin: 20px auto;
- width: 320px;
- }
+    #gameContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      max-width: 400px;
+      margin: 20px auto;
+    }
 
- .hole {
- width: 100px;
- height: 100px;
- background: lightgray;
- display: flex;
- align-items: center;
- justify-content: center;
- font-size: 30px;
- }
+    .hole {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border-radius: 10px;
+      touch-action: manipulation;
+    }
 
- @keyframes bounce {
- 0%, 100% { transform: translateY(0); }
- 50% { transform: translateY(-10px); }
- }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
 
- .bouncy {
- animation: bounce 0.4s infinite;
- }
- </style>
+    .bouncy {
+      animation: bounce 0.4s infinite;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background-color: #444;
+      color: white;
+    }
+
+    a {
+      display: block;
+      margin-top: 10px;
+      font-size: 16px;
+      color: #0077cc;
+      text-decoration: none;
+    }
+
+    img {
+      margin-top: 15px;
+      width: 90%;
+      max-width: 300px;
+      border-radius: 12px;
+    }
+  </style>
 </head>
 <body>
- <h1>Smash-a-Poop</h1>
- <p>Click the to score points!</p>
- <div id="score">Score: 0</div>
- <div id="gameContainer"></div>
+  <h1>Smash-a-Poop</h1>
+  <p>Click the 💩 to score points!</p>
+  <div id="score">Score: 0</div>
+  <div id="gameContainer"></div>
 
- <!-- Sound effect -->
- <audio id="splatSound" src="https://www.soundjay.com/human/sounds/fart-01.mp3" preload="auto"></audio>
+  <audio id="splatSound" src="https://www.soundjay.com/human/sounds/fart-01.mp3" preload="auto"></audio>
 
- <script>
- const gameContainer = document.getElementById('gameContainer');
- let score = 0;
- let timeLeft = 30;
- let gameInterval;
+  <script>
+    const gameContainer = document.getElementById('gameContainer');
+    let score = 0;
+    let timeLeft = 30;
+    let gameInterval;
 
- const timerDisplay = document.createElement('div');
- timerDisplay.innerText = `Time left: ${timeLeft}s`;
- document.body.insertBefore(timerDisplay, gameContainer);
+    const timerDisplay = document.createElement('div');
+    timerDisplay.innerText = `Time left: ${timeLeft}s`;
+    document.body.insertBefore(timerDisplay, gameContainer);
 
- const scoreDisplay = document.getElementById('score');
+    const scoreDisplay = document.getElementById('score');
 
- const dogImages = [
- 'https://placedog.net/400/300?id=1',
- 'https://placedog.net/400/300?id=2',
- 'https://placedog.net/400/300?id=3',
- 'https://placedog.net/400/300?id=4',
- 'https://placedog.net/400/300?id=5'
- ];
+    const dogImages = [
+      'https://placedog.net/400/300?id=1',
+      'https://placedog.net/400/300?id=2',
+      'https://placedog.net/400/300?id=3',
+      'https://placedog.net/400/300?id=4',
+      'https://placedog.net/400/300?id=5'
+    ];
 
- function createHole() {
- const hole = document.createElement('div');
- hole.classList.add('hole');
- gameContainer.appendChild(hole);
- return hole;
- }
+    function createHole() {
+      const hole = document.createElement('div');
+      hole.classList.add('hole');
+      gameContainer.appendChild(hole);
+      return hole;
+    }
 
- const holes = Array.from({ length: 9 }, createHole);
+    const holes = Array.from({ length: 9 }, createHole);
 
- function randomPoop() {
- const index = Math.floor(Math.random() * holes.length);
- holes.forEach(hole => hole.innerHTML = '');
- const poop = document.createElement('div');
- poop.innerHTML = ' ';
- poop.classList.add('bouncy');
- poop.style.cursor = 'pointer';
- holes[index].appendChild(poop);
+    function randomPoop() {
+      const index = Math.floor(Math.random() * holes.length);
+      holes.forEach(hole => hole.innerHTML = '');
+      const poop = document.createElement('div');
+      poop.innerHTML = '&#128169;'; // 💩 emoji using Unicode for compatibility
+      poop.classList.add('bouncy');
+      poop.style.cursor = 'pointer';
+      poop.style.fontSize = '48px';
+      poop.style.touchAction = 'manipulation';
+      holes[index].appendChild(poop);
 
- poop.addEventListener('click', () => {
- score++;
- document.getElementById('splatSound').play();
- scoreDisplay.innerText = `Score: ${score}`;
- holes[index].innerHTML = '';
- });
- }
+      poop.addEventListener('click', () => {
+        score++;
+        document.getElementById('splatSound').play().catch(() => {}); // Prevent autoplay errors
+        scoreDisplay.innerText = `Score: ${score}`;
+        holes[index].innerHTML = '';
+      });
+    }
 
- function endGame() {
- clearInterval(gameInterval);
- gameContainer.innerHTML = '';
+    function endGame() {
+      clearInterval(gameInterval);
+      gameContainer.innerHTML = '';
 
- let message = '';
- if (score > 25) {
- message = "You are a super-pooper-smasher!";
- } else if (score > 20) {
- message = "Yes! You are ready for a puppy!";
- } else {
- message = "Hummm maybe you should consider an adult dog?";
- }
+      let message = '';
+      if (score > 25) {
+        message = "You are a super-pooper-smasher!";
+      } else if (score > 20) {
+        message = "Yes! You are ready for a puppy!";
+      } else {
+        message = "Hummm maybe you should consider an adult dog?";
+      }
 
- timerDisplay.innerText = 'Game Over!';
- const result = document.createElement('div');
- result.innerHTML = `<strong>Final Score: ${score}</strong><br>${message}`;
- result.style.marginTop = '10px';
- result.style.fontWeight = 'bold';
- document.body.appendChild(result);
+      timerDisplay.innerText = 'Game Over!';
+      const result = document.createElement('div');
+      result.innerHTML = `<strong>Final Score: ${score}</strong><br>${message}`;
+      result.style.marginTop = '10px';
+      result.style.fontWeight = 'bold';
+      document.body.appendChild(result);
 
- const dogPic = document.createElement('img');
- dogPic.src = dogImages[Math.floor(Math.random() * dogImages.length)];
- dogPic.alt = 'Cute adoptable dog';
- dogPic.style.marginTop = '15px';
- dogPic.style.width = '300px';
- dogPic.style.borderRadius = '12px';
- document.body.appendChild(dogPic);
+      const dogPic = document.createElement('img');
+      dogPic.src = dogImages[Math.floor(Math.random() * dogImages.length)];
+      dogPic.alt = 'Cute adoptable dog';
+      document.body.appendChild(dogPic);
 
- const adoptLink = document.createElement('a');
- adoptLink.href = 'https://allpawsondeck.org';
- adoptLink.target = '_blank';
- adoptLink.innerText = 'Visit All Paws on Deck to meet your match!';
- adoptLink.style.display = 'block';
- adoptLink.style.marginTop = '10px';
- adoptLink.style.fontSize = '16px';
- adoptLink.style.color = '#0077cc';
- document.body.appendChild(adoptLink);
+      const adoptLink = document.createElement('a');
+      adoptLink.href = 'https://allpawsondeck.org';
+      adoptLink.target = '_blank';
+      adoptLink.innerText = 'Visit All Paws on Deck to meet your match!';
+      document.body.appendChild(adoptLink);
 
- const playAgain = document.createElement('button');
- playAgain.innerText = 'Play Again';
- playAgain.style.marginTop = '15px';
- playAgain.style.padding = '10px 20px';
- playAgain.style.fontSize = '16px';
- playAgain.style.cursor = 'pointer';
- document.body.appendChild(playAgain);
- playAgain.onclick = () => location.reload();
- }
+      const playAgain = document.createElement('button');
+      playAgain.innerText = 'Play Again';
+      playAgain.onclick = () => location.reload();
+      document.body.appendChild(playAgain);
+    }
 
- gameInterval = setInterval(() => {
- randomPoop();
- timeLeft--;
- timerDisplay.innerText = `Time left: ${timeLeft}s`;
-
- if (timeLeft <= 0) {
- endGame();
- }
- }, 1000);
- </script>
+    gameInterval = setInterval(() => {
+      randomPoop();
+      timeLeft--;
+      timerDisplay.innerText = `Time left: ${timeLeft}s`;
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }, 1000);
+  </script>
 </body>
 </html>
-
