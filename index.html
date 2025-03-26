@@ -43,7 +43,45 @@ holes[index].innerHTML = '';
 });
 }
 
-setInterval(randomPoop, 1000);
+let gameInterval;
+let timeLeft = 30; // game lasts 30 seconds
+
+const timerDisplay = document.createElement('div');
+timerDisplay.innerText = `Time left: ${timeLeft}s`;
+document.body.insertBefore(timerDisplay, gameContainer);
+
+gameInterval = setInterval(() => {
+randomPoop();
+timeLeft--;
+timerDisplay.innerText = `Time left: ${timeLeft}s`;
+
+if (timeLeft <= 0) {
+  clearInterval(gameInterval);
+  gameContainer.innerHTML = '';
+  
+  let message = '';
+  if (score === 0) {
+    message = "You didn't smash a single poop... Were you even trying?";
+  } else if (score < 5) {
+    message = "You smashed a few poops—try again!";
+  } else if (score < 10) {
+    message = "Nice reflexes! You're a decent poop smasher.";
+  } else if (score < 20) {
+    message = "Wow! You're a poop-smashing master!";
+  } else {
+    message = "Legendary status: Poop destroyer supreme!";
+  }
+
+  timerDisplay.innerText = 'Game Over!';
+  const result = document.createElement('div');
+  result.innerText = Final Score: ${score} — ${message};
+  result.style.marginTop = '10px';
+  result.style.fontWeight = 'bold';
+  document.body.appendChild(result);
+}
+
+}, 1000);
+
 </script>
 </body>
 </html>
