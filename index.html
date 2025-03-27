@@ -124,15 +124,21 @@
   <div id="gameContainer"></div>
 
   <script>
-    const gameContainer = document.getElementById('gameContainer');
-    const scoreDisplay = document.getElementById('score');
-    const playerNameInput = document.getElementById('playerName');
-    const splatSound = document.getElementById('splatSound');
-    const dogOfTheDay = {
-      name: "Biscuit",
-      image: "https://placedog.net/400/300?id=42",
-      link: "https://www.allpawsondeck.org/adopt"
-    };
+    fetch("https://b4e0cd8f-0a27-4082-b709-20711e8e7772.usrfiles.com/ugd/b4e0cd_9fc68875c0fb4ec585f73032e51fa764.txt")
+  .then((res) => res.json())
+  .then((dog) => {
+    const dogLink = document.createElement('a');
+    dogLink.href = dog.link;
+    dogLink.innerHTML = `Today's Featured Dog: <strong>${dog.name}</strong>`;
+    dogLink.target = "_blank";
+    document.body.appendChild(dogLink);
+
+    const dogImage = document.createElement('img');
+    dogImage.src = dog.image;
+    dogImage.alt = dog.name;
+    document.body.appendChild(dogImage);
+  })
+  .catch((e) => console.error("Failed to load Dog of the Day:", e));
 
     let timeLeft = 0;
     let score = 0;
