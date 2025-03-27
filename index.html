@@ -1,256 +1,301 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Smash-a-Poop</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <title>Smash-a-Poop</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
       font-family: 'Fredoka', sans-serif;
-      background: #fffbe6;
+      font-weight: 700;
       text-align: center;
+      background-color: #003b3b;
       padding: 20px;
+      color: #ffffff;
     }
-
     #logo {
-      font-size: 2.5em;
-      background-color: #f44336;
-      color: #ffeb3b;
-      padding: 10px 20px;
-      border-radius: 20px;
+      font-size: 3em;
+      background-color: #ff0080;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 24px;
       display: inline-block;
-      margin-bottom: 20px;
-      box-shadow: 2px 2px 0 #000;
+      margin-bottom: 24px;
+      box-shadow: 3px 3px 0 #ffcc00;
     }
-
     .difficulty-btn {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin: 5px;
-      border: 2px solid #222;
-      background-color: #f44336;
-      color: #fff;
+      padding: 12px 24px;
+      font-size: 22px;
+      margin: 10px;
+      border: 3px solid #ffcc00;
+      background-color: #6a0dad;
+      color: #ffffff;
       cursor: pointer;
-      border-radius: 10px;
-      box-shadow: 2px 2px 0 #000;
-      transition: transform 0.1s ease;
+      border-radius: 12px;
+      box-shadow: 2px 2px 0 #ff0080;
     }
-
-    .difficulty-btn:hover {
-      transform: scale(1.05);
-      background-color: #d32f2f;
-    }
-
     input {
-      padding: 10px;
-      font-size: 16px;
+      padding: 12px;
+      font-size: 18px;
       width: 80%;
-      border-radius: 8px;
-      margin: 10px 0;
+      border-radius: 10px;
+      margin: 12px 0;
     }
-
     #gameContainer {
       display: none;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 10px;
-      max-width: 400px;
+      grid-template-columns: repeat(3, 100px);
+      gap: 12px;
+      justify-content: center;
       margin: 20px auto;
     }
-
     .hole {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: #e0e0e0;
+      width: 100px;
+      height: 100px;
+      background: #ffeeaa;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 40px;
       border-radius: 10px;
-      touch-action: manipulation;
     }
-
-    .bouncy {
-      animation: bounce 0.4s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 8px;
-      border: none;
-      background-color: #333;
-      color: white;
-    }
-
-    a {
-      display: block;
+    #scoreDisplay, #timerDisplay {
+      font-size: 24px;
       margin-top: 10px;
-      font-size: 16px;
-      color: #0077cc;
-      text-decoration: none;
     }
-
-    img {
-      margin-top: 15px;
-      width: 90%;
-      max-width: 300px;
+    #leaderboard {
+      background: #222;
+      padding: 16px;
       border-radius: 12px;
+      max-width: 400px;
+      margin: 20px auto;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    #leaderboard h2 {
+      color: #ffcc00;
+    }
+    #leaderboardList {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+    #leaderboardList li {
+      margin: 4px 0;
+      font-size: 18px;
+    }
+    #toggleLeaderboard {
+      margin-top: 10px;
+      background-color: #ffcc00;
+      color: #000;
+    }
+    .dog-image {
+      max-width: 300px;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 10px auto;
+      display: block;
+    }
+    #restartSection {
+      margin-top: 24px;
+    }
+    a {
+      color: #00ffff;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div id="logo">Smash-a-Poop</div>
-
   <div id="startScreen">
     <h2>Select difficulty:</h2>
-    <button class="difficulty-btn" onclick="startGame(60)">Easy<br>60 sec</button>
-    <button class="difficulty-btn" onclick="startGame(30)">Medium<br>30 sec</button>
-    <button class="difficulty-btn" onclick="startGame(15)">Chaos<br>15 sec</button>
-
     <h3>Enter your name:</h3>
     <input type="text" id="playerName" placeholder="Your name">
+    <div id="difficultyButtons">
+      <button class="difficulty-btn" id="easyBtn">Easy (60s)</button>
+      <button class="difficulty-btn" id="mediumBtn">Medium (30s)</button>
+      <button class="difficulty-btn" id="chaosBtn">Chaos (15s)</button>
+    </div>
   </div>
-<audio id="splatSound" src="https://cdn.jsdelivr.net/gh/Thatkookooguy/sounds/splat.mp3" preload="auto"></audio>
-   <div id="score"></div>
+
+  <div id="scoreDisplay">Score: 0</div>
+  <div id="timerDisplay">Time left: 0s</div>
   <div id="gameContainer"></div>
 
+  <div id="leaderboard">
+    <h2>🏆 Leaderboard</h2>
+    <ul id="leaderboardList"></ul>
+    <button id="toggleLeaderboard" class="difficulty-btn">View Full Leaderboard</button>
+  </div>
+
   <script>
-    fetch("https://b4e0cd8f-0a27-4082-b709-20711e8e7772.usrfiles.com/ugd/b4e0cd_9fc68875c0fb4ec585f73032e51fa764.txt")
-  .then((res) => res.json())
-  .then((dog) => {
-    const dogLink = document.createElement('a');
-    dogLink.href = dog.link;
-    dogLink.innerHTML = `Today's Featured Dog: <strong>${dog.name}</strong>`;
-    dogLink.target = "_blank";
-    document.body.appendChild(dogLink);
+    window.onload = function () {
+      const gameContainer = document.getElementById('gameContainer');
+      const scoreDisplay = document.getElementById('scoreDisplay');
+      const timerDisplay = document.getElementById('timerDisplay');
+      const playerNameInput = document.getElementById('playerName');
+      const difficultyButtons = document.getElementById('difficultyButtons');
+      let timeLeft = 0;
+      let score = 0;
+      let interval;
+      const holes = [];
+      let dogDisplayed = false;
+      let showingFull = false;
 
-    const dogImage = document.createElement('img');
-    dogImage.src = dog.image;
-    dogImage.alt = dog.name;
-    document.body.appendChild(dogImage);
-  })
-  .catch((e) => console.error("Failed to load Dog of the Day:", e));
+      document.getElementById('easyBtn').onclick = () => startGame(60);
+      document.getElementById('mediumBtn').onclick = () => startGame(30);
+      document.getElementById('chaosBtn').onclick = () => startGame(15);
 
-    let timeLeft = 0;
-    let score = 0;
-    let timerDisplay;
-    let interval;
-    const holes = [];
-
-    function playSplatSound() {
-      if (splatSound.readyState >= 2) {
-        splatSound.pause();
-        splatSound.currentTime = 0;
-        splatSound.play().catch((e) => console.log("Sound blocked:", e));
-      }
-    }
-
-    function startGame(duration) {
-      const name = playerNameInput.value.trim();
-      if (!name) {
-        alert("Please enter your name first!");
-        return;
-      }
-
-      document.getElementById('startScreen').style.display = 'none';
-      gameContainer.style.display = 'grid';
-      timeLeft = duration;
-      score = 0;
-      scoreDisplay.innerText = `Score: 0`;
-
-      timerDisplay = document.createElement('div');
-      timerDisplay.innerText = `Time left: ${timeLeft}s`;
-      document.body.insertBefore(timerDisplay, gameContainer);
-
-      gameContainer.innerHTML = '';
-      holes.length = 0;
-
-      for (let i = 0; i < 9; i++) {
-        const hole = document.createElement('div');
-        hole.classList.add('hole');
-        gameContainer.appendChild(hole);
-        holes.push(hole);
-      }
-
-      interval = setInterval(() => {
-        spawnPoop();
-        timeLeft--;
-        timerDisplay.innerText = `Time left: ${timeLeft}s`;
-        if (timeLeft <= 0) endGame(name);
-      }, 1000);
-    }
-
-    function spawnPoop() {
-      const index = Math.floor(Math.random() * holes.length);
-      holes.forEach(h => h.innerHTML = '');
-      const poop = document.createElement('div');
-      poop.innerHTML = '&#128169;';
-      poop.classList.add('bouncy');
-      poop.style.cursor = 'pointer';
-      holes[index].appendChild(poop);
-
-      poop.addEventListener('click', () => {
-        playSplatSound();
-        score++;
-        scoreDisplay.innerText = `Score: ${score}`;
-        holes[index].innerHTML = '';
+      document.getElementById('toggleLeaderboard').addEventListener('click', function () {
+        showingFull = !showingFull;
+        loadLeaderboard(showingFull);
+        this.innerText = showingFull ? "Show Top 10 (This Week)" : "View Full Leaderboard";
       });
-    }
 
-    function endGame(name) {
-      clearInterval(interval);
-      gameContainer.innerHTML = '';
-      gameContainer.style.display = 'none';
-      timerDisplay.innerText = "Game Over!";
+      loadLeaderboard();
 
-      let message = '';
-      if (score > 25) {
-        message = "You are a super-pooper-smasher!";
-        confetti();
-      } else if (score > 20) {
-        message = "Yes! You are ready for a puppy!";
-      } else {
-        message = "Hummm maybe you should consider an adult dog?";
+      function loadLeaderboard(showAll = false) {
+        const leaderboardList = document.getElementById('leaderboardList');
+        leaderboardList.innerHTML = '<li>Loading...</li>';
+
+        fetch("https://script.google.com/macros/s/AKfycbxeWvkZIkzJ1O7TWsQakUleVFrA6E1cUfAf6WEiWubhtl_sLpfMp-6Xav3XLNOwDDEU/exec")
+          .then(response => response.json())
+          .then(scores => {
+            leaderboardList.innerHTML = '';
+            const displayScores = showAll ? scores : scores.slice(0, 10);
+
+            if (displayScores.length === 0) {
+              leaderboardList.innerHTML = '<li>No scores from this week yet!</li>';
+              return;
+            }
+
+            displayScores.forEach(entry => {
+              const li = document.createElement('li');
+              li.innerText = `${entry.name} — ${entry.score} points (${entry.date})`;
+              leaderboardList.appendChild(li);
+            });
+          })
+          .catch(err => {
+            leaderboardList.innerHTML = '<li>Failed to load leaderboard.</li>';
+            console.error(err);
+          });
       }
 
-      const result = document.createElement('div');
-      result.innerHTML = `<strong>${name}'s Final Score: ${score}</strong><br>${message}`;
-      result.style.marginTop = '10px';
-      document.body.appendChild(result);
+      function startGame(duration) {
+        const name = playerNameInput.value.trim();
+        if (!name) {
+          alert("Please enter your name first!");
+          return;
+        }
 
-      const cert = document.createElement('a');
-      cert.href = `data:text/plain;charset=utf-8,${encodeURIComponent("CERTIFICATE OF POOP-SMASHING EXCELLENCE\n\nAwarded to: " + name + "\nScore: " + score + "\nStatus: " + message)}`;
-      cert.download = "poop-smashing-certificate.txt";
-      cert.innerText = "Download your Poop Smasher Certificate!";
-      cert.style.display = "block";
-      cert.style.marginTop = "10px";
-      document.body.appendChild(cert);
+        document.getElementById('startScreen').style.display = 'none';
+        gameContainer.style.display = 'grid';
+        timeLeft = duration;
+        score = 0;
+        scoreDisplay.innerText = `Score: ${score}`;
+        timerDisplay.innerText = `Time left: ${timeLeft}s`;
 
-      const dogLink = document.createElement('a');
-      dogLink.href = dogOfTheDay.link;
-      dogLink.innerHTML = `Today's Featured Dog: <strong>${dogOfTheDay.name}</strong>`;
-      dogLink.target = "_blank";
-      document.body.appendChild(dogLink);
+        gameContainer.innerHTML = '';
+        holes.length = 0;
 
-      const dogImage = document.createElement('img');
-      dogImage.src = dogOfTheDay.image;
-      dogImage.alt = dogOfTheDay.name;
-      document.body.appendChild(dogImage);
+        for (let i = 0; i < 9; i++) {
+          const hole = document.createElement('div');
+          hole.classList.add('hole');
+          hole.innerHTML = '';
+          gameContainer.appendChild(hole);
+          holes.push(hole);
+        }
 
-      const restart = document.createElement('button');
-      restart.innerText = "Play Again";
-      restart.onclick = () => location.reload();
-      document.body.appendChild(restart);
-    }
+        interval = setInterval(() => {
+          spawnPoop();
+          timeLeft--;
+          timerDisplay.innerText = `Time left: ${timeLeft}s`;
+          if (timeLeft <= 0) endGame(name);
+        }, 1000);
+      }
+
+      function spawnPoop() {
+        const index = Math.floor(Math.random() * holes.length);
+        holes.forEach(hole => hole.innerHTML = '');
+        const poop = document.createElement('div');
+        poop.innerHTML = '💩';
+        poop.style.cursor = 'pointer';
+        poop.style.fontSize = '60px';
+        holes[index].appendChild(poop);
+
+        poop.addEventListener('click', () => {
+          score++;
+          scoreDisplay.innerText = `Score: ${score}`;
+          holes[index].innerHTML = '';
+        });
+      }
+
+      function saveScoreToSheet(playerName, score) {
+        const sheetURL = "https://script.google.com/macros/s/AKfycbxeWvkZIkzJ1O7TWsQakUleVFrA6E1cUfAf6WEiWubhtl_sLpfMp-6Xav3XLNOwDDEU/exec";
+
+        const params = new URLSearchParams();
+        params.append('playerName', playerName);
+        params.append('score', score);
+
+        fetch(sheetURL + "?" + params.toString())
+          .then(response => response.text())
+          .then(data => {
+            console.log('Score saved successfully:', data);
+          })
+          .catch(error => {
+            console.error('Error saving score:', error);
+          });
+      }
+
+      function endGame(name) {
+        clearInterval(interval);
+        gameContainer.innerHTML = '';
+        gameContainer.style.display = 'none';
+        timerDisplay.innerText = "Game Over!";
+
+        const result = document.createElement('div');
+        result.innerHTML = `<strong>${name}'s Final Score: ${score}</strong>`;
+        document.body.appendChild(result);
+
+        saveScoreToSheet(name, score);
+
+        const message = document.createElement('p');
+        if (score > 25) {
+          confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+          message.innerHTML = "<strong>Great job! You are a Poop pro!<br>You are ready to adopt a puppy!<br><a href='https://www.allpawsondeck.org' target='_blank'>Check out our available puppies at allpawsondeck.org</a></strong>";
+        } else {
+          message.innerHTML = "<strong>If you can't keep up with the poop, consider an adult dog 😉<br><a href='https://www.allpawsondeck.org' target='_blank'>Check out our amazing house-trained dogs at allpawsondeck.org</a></strong>";
+        }
+        document.body.appendChild(message);
+
+        if (!dogDisplayed) {
+          dogDisplayed = true;
+          fetch("https://b4e0cd8f-0a27-4082-b709-20711e8e7772.usrfiles.com/ugd/b4e0cd_9fc68875c0fb4ec585f73032e51fa764.txt")
+            .then((res) => res.json())
+            .then((dog) => {
+              const dogLink = document.createElement('a');
+              dogLink.href = dog.link;
+              dogLink.innerHTML = `Today's Featured Dog: <strong>${dog.name}</strong>`;
+              dogLink.target = "_blank";
+              document.body.appendChild(dogLink);
+
+              document.body.appendChild(document.createElement('br'));
+
+              const dogImage = document.createElement('img');
+              dogImage.src = dog.image;
+              dogImage.alt = dog.name;
+              dogImage.className = 'dog-image';
+              document.body.appendChild(dogImage);
+
+              const restartSection = document.createElement('div');
+              restartSection.id = 'restartSection';
+              restartSection.appendChild(difficultyButtons);
+              document.body.appendChild(restartSection);
+            })
+            .catch((e) => console.error("Failed to load Dog of the Day:", e));
+        }
+      }
+    };
   </script>
 </body>
 </html>
