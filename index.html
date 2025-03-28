@@ -119,13 +119,10 @@
 <body>
   <div id="logo">Smash-a-Poop</div>
   <div id="startScreen">
-    <h2>Select difficulty:</h2>
     <h3>Enter your name:</h3>
     <input type="text" id="playerName" placeholder="Your name">
     <div id="difficultyButtons">
-      <button class="difficulty-btn" id="easyBtn">Easy (60s)</button>
-      <button class="difficulty-btn" id="mediumBtn">Medium (30s)</button>
-      <button class="difficulty-btn" id="chaosBtn">Chaos (15s)</button>
+      <button class="difficulty-btn" id="startBtn">Start Game (30s)</button>
     </div>
   </div>
 
@@ -163,9 +160,7 @@
       let dogDisplayed = false;
       let showingFull = false;
 
-      document.getElementById('easyBtn').onclick = () => startGame(60);
-      document.getElementById('mediumBtn').onclick = () => startGame(30);
-      document.getElementById('chaosBtn').onclick = () => startGame(15);
+      document.getElementById('startBtn').onclick = () => startGame(30);
 
       document.getElementById('toggleLeaderboard').addEventListener('click', function () {
         showingFull = !showingFull;
@@ -298,7 +293,7 @@
         doc.text("Visit allpawsondeck.org to adopt a pup!", 20, 90);
 
         doc.save("poop-certificate.pdf");
-  
+      }
       }
 
       function endGame(name) {
