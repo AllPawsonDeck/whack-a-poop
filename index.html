@@ -239,7 +239,26 @@
         const index = Math.floor(Math.random() * holes.length);
         holes.forEach(hole => hole.innerHTML = '');
         const poop = document.createElement('div');
-        poop.innerHTML = '💩';
+
+        // Select emoji based on month
+        const now = new Date();
+        const month = now.getMonth();
+        const themedPoops = {
+          0: '❄️💩',  // January
+          1: '💘💩',  // February
+          2: '🌸💩',  // March
+          3: '🌷💩',  // April
+          4: '🌼💩',  // May
+          5: '☀️💩',  // June
+          6: '🕶️💩',  // July
+          7: '🍉💩',  // August
+          8: '🍁💩',  // September
+          9: '🎃💩',  // October
+          10: '🦃💩', // November
+          11: '🎄💩'  // December
+        };
+        const themedPoop = themedPoops[month] || '💩';
+        poop.innerHTML = themedPoop;
         poop.style.cursor = 'pointer';
         poop.style.fontSize = '60px';
         holes[index].appendChild(poop);
