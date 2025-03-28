@@ -241,14 +241,18 @@
         holes.forEach(hole => hole.innerHTML = '');
         const poop = document.createElement('div');
 
-        const themedPoop = '💩';
-        poop.innerHTML = themedPoop;
+        // Random chance to spawn gold poop
+        const isGolden = Math.random() < 0.15; // 15% chance
+        const emoji = isGolden ? '✨💩' : '💩';
+        poop.innerHTML = emoji;
+        poop.dataset.points = isGolden ? 3 : 1;
         poop.style.cursor = 'pointer';
         poop.style.fontSize = '60px';
         holes[index].appendChild(poop);
 
         poop.addEventListener('click', () => {
-          score++;
+          const points = parseInt(poop.dataset.points) || 1;
+          score += points;
           scoreDisplay.innerText = `Score: ${score}`;
           holes[index].innerHTML = '';
         });
