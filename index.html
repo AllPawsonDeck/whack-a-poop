@@ -156,6 +156,7 @@
       let timeLeft = 0;
       let score = 0;
       let interval;
+      let poopInterval;
       const holes = [];
       let dogDisplayed = false;
       let showingFull = false;
@@ -222,12 +223,17 @@
           holes.push(hole);
         }
 
+        // Countdown timer
         interval = setInterval(() => {
-          spawnPoop();
           timeLeft--;
           timerDisplay.innerText = `Time left: ${timeLeft}s`;
           if (timeLeft <= 0) endGame(name);
         }, 1000);
+
+        // Faster poop spawner
+        poopInterval = setInterval(() => {
+          spawnPoop();
+        }, 600);
       }
 
       function spawnPoop() {
@@ -280,6 +286,7 @@
 
       function endGame(name) {
         clearInterval(interval);
+        clearInterval(poopInterval);
         gameContainer.innerHTML = '';
         gameContainer.style.display = 'none';
         timerDisplay.innerText = "Game Over!";
