@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smash-a-Poop</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: 'Fredoka', sans-serif;
@@ -103,6 +104,16 @@
       color: #00ffff;
       font-weight: bold;
     }
+    .cert-btn {
+      background-color: #ffcc00;
+      color: #000;
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -130,6 +141,14 @@
 
   <script>
     const sheetURL = "https://script.google.com/macros/s/AKfycbz6J_yMgmKI4xCAyZMz6NZP5aQCWIiBHes2dBhK2LyZHmONSgqNpn8rEOoH3f2hgtb2fw/exec";
+    const funFacts = [
+      "Dogs have three eyelids!",
+      "A Greyhound can beat a cheetah in a long race.",
+      "Dogs can smell your feelings.",
+      "Dalmatians are born completely white.",
+      "Dogs have about 1,700 taste buds.",
+      "The Basenji dog doesn't bark—it yodels."
+    ];
 
     window.onload = function () {
       const gameContainer = document.getElementById('gameContainer');
@@ -161,12 +180,7 @@
         leaderboardList.innerHTML = '<li>Loading...</li>';
 
         fetch(sheetURL)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-          })
+          .then(response => response.json())
           .then(scores => {
             leaderboardList.innerHTML = '';
             const displayScores = showAll ? scores : scores.slice(0, 10);
@@ -252,6 +266,21 @@
           });
       }
 
+      function generateCertificate(name, score) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(24);
+        doc.text("Certificate of Achievement", 20, 30);
+        doc.setFontSize(16);
+        doc.text(`Presented to: ${name}`, 20, 50);
+        doc.text(`For smashing ${score} poops!`, 20, 60);
+        doc.text("You're officially a Poop Pro!", 20, 75);
+        doc.text("Visit allpawsondeck.org to adopt a pup!", 20, 90);
+
+        doc.save("poop-certificate.pdf");
+      }
+
       function endGame(name) {
         clearInterval(interval);
         gameContainer.innerHTML = '';
@@ -272,6 +301,16 @@
           message.innerHTML = "<strong>If you can't keep up with the poop, consider an adult dog 😉<br><a href='https://www.allpawsondeck.org' target='_blank'>Check out our amazing house-trained dogs at allpawsondeck.org</a></strong>";
         }
         document.body.appendChild(message);
+
+        const fact = document.createElement('p');
+        fact.innerText = `🐾 Did you know? ${funFacts[Math.floor(Math.random() * funFacts.length)]}`;
+        document.body.appendChild(fact);
+
+        const certButton = document.createElement('button');
+        certButton.className = 'cert-btn';
+        certButton.innerText = "Download Certificate";
+        certButton.onclick = () => generateCertificate(name, score);
+        document.body.appendChild(certButton);
 
         if (!dogDisplayed) {
           dogDisplayed = true;
