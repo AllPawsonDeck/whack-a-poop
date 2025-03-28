@@ -123,7 +123,7 @@
 
 <div id="startScreen">
     <h3>Enter your name:</h3>
-    <input type="text" id="playerName" placeholder="Your name" style="width: 60%; font-size: 16px;">
+    <input type="text" id="playerName" placeholder="Your name" style="width: 40%; font-size: 14px;">
     <div id="difficultyButtons">
       <button class="difficulty-btn" id="startBtn">Start Game (30s)</button>
     </div>
@@ -208,8 +208,11 @@
           return;
         }
 
+        // Reset screen elements
         document.getElementById('startScreen').style.display = 'none';
         gameContainer.style.display = 'grid';
+        document.querySelectorAll('body > div:not(#gameContainer):not(#logo):not(#leaderboard)').forEach(el => el.remove());
+
         timeLeft = duration;
         score = 0;
         scoreDisplay.innerText = `Score: ${score}`;
@@ -239,7 +242,22 @@
         }, 600);
       }
 
+        // Countdown timer
+        interval = setInterval(() => {
+          timeLeft--;
+          timerDisplay.innerText = `Time left: ${timeLeft}s`;
+          if (timeLeft <= 0) endGame(name);
+        }, 1000);
+
+        // Faster poop spawner
+        poopInterval = setInterval(() => {
+          spawnPoop();
+        }, 600);
+      }
+
       function spawnPoop() {
+        const activePoops = document.querySelectorAll('.hole div');
+        if (activePoops.length > 0) return;
         const index = Math.floor(Math.random() * holes.length);
         holes.forEach(hole => hole.innerHTML = '');
         const poop = document.createElement('div');
@@ -251,12 +269,6 @@
         poop.style.cursor = 'pointer';
         poop.style.fontSize = '60px';
         holes[index].appendChild(poop);
-
-        poop.addEventListener('click', () => {
-          score++;
-          scoreDisplay.innerText = `Score: ${score}`;
-          holes[index].innerHTML = '';
-        });
 
         poop.addEventListener('click', () => {
           score++;
@@ -367,7 +379,5 @@
       });
     })
     .catch(err => console.error("Dog gallery load error:", err));
-</script>
-
 </body>
 </html>
