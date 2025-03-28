@@ -118,7 +118,18 @@
 </head>
 <body>
   <div id="logo">Smash-a-Poop</div>
-  <div id="startScreen">
+  
+    <div style="margin-bottom: 12px;">
+      <label for="themeSelect">Choose a theme:</label>
+      <select id="themeSelect" style="font-size: 16px; padding: 6px; border-radius: 6px;">
+        <option value="default">Classic Poop</option>
+        <option value="jungle">Jungle Poop</option>
+        <option value="space">Space Poop</option>
+        <option value="disco">Disco Poop</option>
+      </select>
+    </div>
+
+$1
     <h3>Enter your name:</h3>
     <input type="text" id="playerName" placeholder="Your name">
     <div id="difficultyButtons">
@@ -241,14 +252,22 @@
         holes.forEach(hole => hole.innerHTML = '');
         const poop = document.createElement('div');
 
-        // Random chance to spawn gold poop
-        const isGolden = Math.random() < 0.15; // 15% chance
-        const emoji = isGolden ? '🏆' : '💩';
+        const theme = document.getElementById('themeSelect').value;
+        let emoji = '💩';
+        if (theme === 'jungle') emoji = '🦧';
+        else if (theme === 'space') emoji = '👾';
+        else if (theme === 'disco') emoji = '🪩';
+
         poop.innerHTML = emoji;
-        poop.dataset.points = isGolden ? 3 : 1;
         poop.style.cursor = 'pointer';
         poop.style.fontSize = '60px';
         holes[index].appendChild(poop);
+
+        poop.addEventListener('click', () => {
+          score++;
+          scoreDisplay.innerText = `Score: ${score}`;
+          holes[index].innerHTML = '';
+        });
 
         poop.addEventListener('click', () => {
           const points = parseInt(poop.dataset.points) || 1;
