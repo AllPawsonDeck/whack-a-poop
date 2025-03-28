@@ -119,15 +119,7 @@
 <body>
   <div id="logo">Smash-a-Poop</div>
   
-    <div style="margin-bottom: 12px;">
-      <label for="themeSelect">Choose a theme:</label>
-      <select id="themeSelect" style="font-size: 16px; padding: 6px; border-radius: 6px;">
-        <option value="default">Classic Poop</option>
-        <option value="jungle">Jungle Poop</option>
-        <option value="space">Space Poop</option>
-        <option value="disco">Disco Poop</option>
-      </select>
-    </div>
+    
 
 <div id="startScreen">
     <h3>Enter your name:</h3>
@@ -252,7 +244,6 @@
         holes.forEach(hole => hole.innerHTML = '');
         const poop = document.createElement('div');
 
-        const theme = document.getElementById('themeSelect').value;
         let emoji = '💩';
         if (theme === 'jungle') emoji = '🦧';
         else if (theme === 'space') emoji = '👾';
@@ -270,8 +261,7 @@
         });
 
         poop.addEventListener('click', () => {
-          const points = parseInt(poop.dataset.points) || 1;
-          score += points;
+          score++;
           scoreDisplay.innerText = `Score: ${score}`;
           holes[index].innerHTML = '';
         });
@@ -342,73 +332,41 @@
         if (!dogDisplayed) {
           dogDisplayed = true;
           fetch("https://b4e0cd8f-0a27-4082-b709-20711e8e7772.usrfiles.com/ugd/b4e0cd_9fc68875c0fb4ec585f73032e51fa764.txt")
-            .then((res) => res.json())
-            .then((dog) => {
-              const dogLink = document.createElement('a');
-              dogLink.href = dog.link;
-              dogLink.innerHTML = `Today's Featured Dog: <strong>${dog.name}</strong>`;
-              dogLink.target = "_blank";
-              const dogWrapper = document.createElement('div');
-              dogWrapper.style.marginTop = '24px';
-              dogWrapper.appendChild(dogLink);
-              document.body.appendChild(dogWrapper);
-
-              document.body.appendChild(document.createElement('br'));
-
-              const dogImage = document.createElement('img');
-              dogImage.src = dog.image;
-              dogImage.alt = dog.name;
-              dogImage.className = 'dog-image';
-              document.body.appendChild(dogImage);
-
-              const restartSection = document.createElement('div');
-              restartSection.id = 'restartSection';
-              restartSection.appendChild(difficultyButtons);
-              document.body.appendChild(restartSection);
-            })
-            .catch((e) => console.error("Failed to load Dog of the Day:", e));
-        }
-      }
-    };
-  </script>
-<div id="dogGallery" style="margin-top: 40px;">
-  <h2>🐶 Adoptable Dogs Gallery</h2>
-  <div id="dogGrid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;"></div>
-</div>
-
-<script>
-  fetch("https://b4e0cd8f-0a27-4082-b709-20711e8e7772.usrfiles.com/ugd/b4e0cd_9fc68875c0fb4ec585f73032e51fa764.txt")
     .then(res => res.json())
-    .then(dog => {
+    .then(dogs => {
       const dogGrid = document.getElementById('dogGrid');
-      const card = document.createElement('div');
-      card.style.background = '#fff';
-      card.style.color = '#000';
-      card.style.borderRadius = '12px';
-      card.style.padding = '12px';
-      card.style.width = '200px';
-      card.style.boxShadow = '2px 2px 8px rgba(0,0,0,0.3)';
+      dogGrid.innerHTML = '';
 
-      const img = document.createElement('img');
-      img.src = dog.image;
-      img.alt = dog.name;
-      img.style.width = '100%';
-      img.style.borderRadius = '8px';
+      dogs.forEach(dog => {
+        const card = document.createElement('div');
+        card.style.background = '#fff';
+        card.style.color = '#000';
+        card.style.borderRadius = '12px';
+        card.style.padding = '12px';
+        card.style.width = '200px';
+        card.style.boxShadow = '2px 2px 8px rgba(0,0,0,0.3)';
 
-      const name = document.createElement('h4');
-      name.innerText = dog.name;
+        const img = document.createElement('img');
+        img.src = dog.image;
+        img.alt = dog.name;
+        img.style.width = '100%';
+        img.style.borderRadius = '8px';
 
-      const link = document.createElement('a');
-      link.href = dog.link;
-      link.innerText = 'Adopt Me';
-      link.target = '_blank';
-      link.style.display = 'inline-block';
-      link.style.marginTop = '6px';
+        const name = document.createElement('h4');
+        name.innerText = dog.name;
 
-      card.appendChild(img);
-      card.appendChild(name);
-      card.appendChild(link);
-      dogGrid.appendChild(card);
+        const link = document.createElement('a');
+        link.href = dog.link;
+        link.innerText = 'Adopt Me';
+        link.target = '_blank';
+        link.style.display = 'inline-block';
+        link.style.marginTop = '6px';
+
+        card.appendChild(img);
+        card.appendChild(name);
+        card.appendChild(link);
+        dogGrid.appendChild(card);
+      });
     })
     .catch(err => console.error("Dog gallery load error:", err));
 </script>
