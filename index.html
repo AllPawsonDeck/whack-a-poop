@@ -154,32 +154,38 @@
 
       loadLeaderboard();
 
-      function loadLeaderboard(showAll = false) {
-        const leaderboardList = document.getElementById('leaderboardList');
-        leaderboardList.innerHTML = '<li>Loading...</li>';
+     function loadLeaderboard(showAll = false) {
+  const leaderboardList = document.getElementById('leaderboardList');
+  leaderboardList.innerHTML = '<li>Loading...</li>';
 
-        fetch("https://script.google.com/macros/s/AKfycbxeWvkZIkzJ1O7TWsQakUleVFrA6E1cUfAf6WEiWubhtl_sLpfMp-6Xav3XLNOwDDEU/exec")
-          .then(response => response.json())
-          .then(scores => {
-            leaderboardList.innerHTML = '';
-            const displayScores = showAll ? scores : scores.slice(0, 10);
-
-            if (displayScores.length === 0) {
-              leaderboardList.innerHTML = '<li>No scores from this week yet!</li>';
-              return;
-            }
-
-            displayScores.forEach(entry => {
-              const li = document.createElement('li');
-              li.innerText = `${entry.name} — ${entry.score} points (${entry.date})`;
-              leaderboardList.appendChild(li);
-            });
-          })
-          .catch(err => {
-            leaderboardList.innerHTML = '<li>Failed to load leaderboard.</li>';
-            console.error(err);
-          });
+  fetch(sheetURL)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      return response.json();
+    })
+    .then(scores => {
+      leaderboardList.innerHTML = '';
+      const displayScores = showAll ? scores : scores.slice(0, 10);
+
+      if (displayScores.length === 0) {
+        leaderboardList.innerHTML = '<li>No scores from this week yet!</li>';
+        return;
+      }
+
+      displayScores.forEach(entry => {
+        const li = document.createElement('li');
+        li.innerText = `${entry.name} — ${entry.score} points (${entry.date})`;
+        leaderboardList.appendChild(li);
+      });
+    })
+    .catch(err => {
+      leaderboardList.innerHTML = '<li>Failed to load leaderboard.</li>';
+      console.error("Leaderboard load error:", err);
+    });
+}
+
 
       function startGame(duration) {
         const name = playerNameInput.value.trim();
@@ -231,7 +237,7 @@
       }
 
       function saveScoreToSheet(playerName, score) {
-        const sheetURL = "https://script.google.com/macros/s/AKfycbz5xns2FPIDwo7zB7RLq0AxtW0F_fpVk5Zz2qTVimv1q2BxITlaxTBVlY_JMcIx6MbAJg/exec";
+        const sheetURL = "https://script.google.com/macros/s/AKfycbzQ0_kwt_J_GmoCBYzRAnBdin-ve09P01soxd5RwmBZZAXG6j2BL5F5-8vk5aCWmlHh-w/exec";
 
         const params = new URLSearchParams();
         params.append('playerName', playerName);
