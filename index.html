@@ -235,23 +235,6 @@
         holes.forEach(hole => hole.innerHTML = '');
         const poop = document.createElement('div');
 
-        // Select emoji based on month
-        const now = new Date();
-        const month = now.getMonth();
-        const themedPoops = {
-          0: '❄️💩',  // January
-          1: '💘💩',  // February
-          2: '🌸💩',  // March
-          3: '🌷💩',  // April
-          4: '🌼💩',  // May
-          5: '☀️💩',  // June
-          6: '🕶️💩',  // July
-          7: '🍉💩',  // August
-          8: '🍁💩',  // September
-          9: '🎃💩',  // October
-          10: '🦃💩', // November
-          11: '🎄💩'  // December
-        };
         const themedPoop = '💩';
         poop.innerHTML = themedPoop;
         poop.style.cursor = 'pointer';
@@ -293,7 +276,6 @@
         doc.text("Visit allpawsondeck.org to adopt a pup!", 20, 90);
 
         doc.save("poop-certificate.pdf");
-      }
       }
 
       function endGame(name) {
@@ -355,6 +337,7 @@
               document.body.appendChild(restartSection);
             })
             .catch((e) => console.error("Failed to load Dog of the Day:", e));
+        }
       }
     };
   </script>
