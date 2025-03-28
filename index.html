@@ -371,5 +371,47 @@
       }
     };
   </script>
+<div id="dogGallery" style="margin-top: 40px;">
+  <h2>🐶 Adoptable Dogs Gallery</h2>
+  <div id="dogGrid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;"></div>
+</div>
+
+<script>
+  fetch("https://b4e0cd8f-0a27-4082-b709-20711e8e7772.usrfiles.com/ugd/b4e0cd_9fc68875c0fb4ec585f73032e51fa764.txt")
+    .then(res => res.json())
+    .then(dog => {
+      const dogGrid = document.getElementById('dogGrid');
+      const card = document.createElement('div');
+      card.style.background = '#fff';
+      card.style.color = '#000';
+      card.style.borderRadius = '12px';
+      card.style.padding = '12px';
+      card.style.width = '200px';
+      card.style.boxShadow = '2px 2px 8px rgba(0,0,0,0.3)';
+
+      const img = document.createElement('img');
+      img.src = dog.image;
+      img.alt = dog.name;
+      img.style.width = '100%';
+      img.style.borderRadius = '8px';
+
+      const name = document.createElement('h4');
+      name.innerText = dog.name;
+
+      const link = document.createElement('a');
+      link.href = dog.link;
+      link.innerText = 'Adopt Me';
+      link.target = '_blank';
+      link.style.display = 'inline-block';
+      link.style.marginTop = '6px';
+
+      card.appendChild(img);
+      card.appendChild(name);
+      card.appendChild(link);
+      dogGrid.appendChild(card);
+    })
+    .catch(err => console.error("Dog gallery load error:", err));
+</script>
+
 </body>
 </html>
