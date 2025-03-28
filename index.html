@@ -289,13 +289,34 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        doc.setFontSize(24);
-        doc.text("Certificate of Achievement", 20, 30);
+        // Add poop emoji and decoration
+        doc.setFontSize(30);
+        doc.text("💩 Smash-a-Poop 💩", 55, 30);
+
+        doc.setFontSize(22);
+        doc.setTextColor(40, 40, 40);
+        doc.text("Certificate of Achievement", 35, 50);
+
         doc.setFontSize(16);
-        doc.text(`Presented to: ${name}`, 20, 50);
-        doc.text(`For smashing ${score} poops!`, 20, 60);
-        doc.text("You're officially a Poop Pro!", 20, 75);
-        doc.text("Visit allpawsondeck.org to adopt a pup!", 20, 90);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Presented to: ${name}`, 20, 70);
+        doc.text(`For smashing ${score} poops!`, 20, 80);
+        doc.text("You're officially a 💩 Poop Pro 💩!", 20, 95);
+
+        doc.setFontSize(12);
+        doc.setTextColor(80);
+        doc.text("Visit allpawsondeck.org to adopt a pup!", 20, 110);
+
+        // Add a poop border
+        const emoji = "💩";
+        for (let i = 10; i < 200; i += 10) {
+          doc.text(emoji, i, 10);
+          doc.text(emoji, i, 140);
+        }
+        for (let j = 20; j < 140; j += 10) {
+          doc.text(emoji, 10, j);
+          doc.text(emoji, 190, j);
+        }
 
         doc.save("poop-certificate.pdf");
       }
