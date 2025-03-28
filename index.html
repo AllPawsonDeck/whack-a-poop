@@ -321,7 +321,10 @@
               dogLink.href = dog.link;
               dogLink.innerHTML = `Today's Featured Dog: <strong>${dog.name}</strong>`;
               dogLink.target = "_blank";
-              document.body.appendChild(dogLink);
+              const dogWrapper = document.createElement('div');
+              dogWrapper.style.marginTop = '24px';
+              dogWrapper.appendChild(dogLink);
+              document.body.appendChild(dogWrapper);
 
               document.body.appendChild(document.createElement('br'));
 
