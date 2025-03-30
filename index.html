@@ -211,10 +211,7 @@
         // Reset screen elements
         document.getElementById('startScreen').style.display = 'none';
         gameContainer.style.display = 'grid';
-        document.getElementById('scoreDisplay').innerText = `Score: 0`; 
-        document.getElementById('timerDisplay').innerText = `Time left: 0s`; 
-        const oldResults = document.querySelectorAll('.result, .cert-btn, #dogGrid, p'); 
-        oldResults.forEach(el => el.remove());
+        document.querySelectorAll('.result, .cert-btn, #dogGrid, p').forEach(el => el.remove());
 
         timeLeft = duration;
         score = 0;
@@ -305,12 +302,14 @@
         timerDisplay.innerText = "Game Over!";
 
         const result = document.createElement('div');
+        result.className = 'result';
         result.innerHTML = `<strong>${name}'s Final Score: ${score}</strong>`;
         document.body.appendChild(result);
 
         saveScoreToSheet(name, score);
 
         const message = document.createElement('p');
+        message.className = 'result';
         if (score > 25) {
           confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
           message.innerHTML = "<strong>Great job! You are a Poop pro!<br>You are ready to adopt a puppy!<br><a href='https://www.allpawsondeck.org' target='_blank'>Check out our available puppies at allpawsondeck.org</a></strong>";
@@ -320,6 +319,7 @@
         document.body.appendChild(message);
 
         const fact = document.createElement('p');
+        fact.className = 'result';
         fact.innerText = `🐾 Did you know? ${funFacts[Math.floor(Math.random() * funFacts.length)]}`;
         document.body.appendChild(fact);
 
@@ -372,8 +372,10 @@
                 card.appendChild(link);
                 dogGrid.appendChild(card);
               });
-       })
-.catch(err => console.error("Dog gallery load error:", err));
-}
-</script>
-
+            })
+            .catch(err => console.error("Dog gallery load error:", err));
+    }
+      }
+  </script>
+</body>
+</html>
