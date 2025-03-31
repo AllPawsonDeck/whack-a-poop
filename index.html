@@ -189,6 +189,7 @@ já<!DOCTYPE html>
               dogGrid.style.gap = '12px';
               document.body.appendChild(dogGrid);
 
+              console.log("Fetched dogs data:", dogs);
               dogs.forEach(dog => {
                 const card = document.createElement('div');
                 card.style.background = '#fff';
