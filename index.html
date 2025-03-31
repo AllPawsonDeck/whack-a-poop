@@ -178,205 +178,51 @@ já<!DOCTYPE html>
         const leaderboardList = document.getElementById('leaderboardList');
         leaderboardList.innerHTML = '<li>Loading...</li>';
 
-        fetch(sheetURL)
-          .then(response => response.json())
-          .then(scores => {
-            leaderboardList.innerHTML = '';
-            const displayScores = showAll ? scores : scores.slice(0, 10);
+                  fetch("https://b4e0cd8f-0a27-4082-b709-20711e8e7772.usrfiles.com/ugd/b4e0cd_9fc68875c0fb4ec585f73032e51fa764.txt")
+            .then(res => res.json())
+            .then(dogs => {
+              const dogGrid = document.createElement('div');
+              dogGrid.id = 'dogGrid';
+              dogGrid.style.display = 'flex';
+              dogGrid.style.flexWrap = 'wrap';
+              dogGrid.style.justifyContent = 'center';
+              dogGrid.style.gap = '12px';
+              document.body.appendChild(dogGrid);
 
-            if (displayScores.length === 0) {
-              leaderboardList.innerHTML = '<li>No scores from this week yet!</li>';
-              return;
-            }
+              dogs.forEach(dog => {
+                const card = document.createElement('div');
+                card.style.background = '#fff';
+                card.style.color = '#000';
+                card.style.borderRadius = '12px';
+                card.style.padding = '12px';
+                card.style.width = '200px';
+                card.style.boxShadow = '2px 2px 8px rgba(0,0,0,0.3)';
 
-            displayScores.forEach(entry => {
-              const li = document.createElement('li');
-              li.innerText = `${entry.name} — ${entry.score} points (${entry.date})`;
-              leaderboardList.appendChild(li);
-            });
-          })
-          .catch(err => {
-            leaderboardList.innerHTML = '<li>Failed to load leaderboard.</li>';
-            console.error("Leaderboard load error:", err);
-          });
-      }
+                const img = document.createElement('img');
+                img.src = dog.image;
+                img.alt = dog.name;
+                img.style.width = '100%';
+                img.style.borderRadius = '8px';
 
-      function startGame(duration) {
-        const name = playerNameInput.value.trim();
-        if (!name) {
-          alert("Please enter your name first!");
-          return;
+                const name = document.createElement('h4');
+                name.innerText = dog.name;
+
+                const link = document.createElement('a');
+                link.href = dog.link;
+                link.innerText = 'Adopt Me';
+                link.target = '_blank';
+                link.style.display = 'inline-block';
+                link.style.marginTop = '6px';
+
+                card.appendChild(img);
+                card.appendChild(name);
+                card.appendChild(link);
+                dogGrid.appendChild(card);
+              });
+            })
+            .catch(err => console.error("Dog gallery load error:", err));
         }
-
-        // Reset screen elements
-        document.getElementById('startScreen').style.display = 'none';
-        gameContainer.style.display = 'grid';
-        document.querySelectorAll('.result, .cert-btn, #dogGrid, p').forEach(el => el.remove());
-
-        timeLeft = duration;
-        score = 0;
-        scoreDisplay.innerText = `Score: ${score}`;
-        timerDisplay.innerText = `Time left: ${timeLeft}s`;
-
-        gameContainer.innerHTML = '';
-        holes.length = 0;
-
-        for (let i = 0; i < 9; i++) {
-          const hole = document.createElement('div');
-          hole.classList.add('hole');
-          hole.innerHTML = '';
-          gameContainer.appendChild(hole);
-          holes.push(hole);
-        }
-
-        // Countdown timer
-        interval = setInterval(() => {
-          timeLeft--;
-          timerDisplay.innerText = `Time left: ${timeLeft}s`;
-          if (timeLeft <= 0) endGame(name);
-        }, 1000);
-
-        // Faster poop spawner
-        poopInterval = setInterval(() => {
-          spawnPoop();
-        }, 600);
       }
-
-      function spawnPoop() {
-        const activePoops = document.querySelectorAll('.hole div');
-        if (activePoops.length > 0) return;
-        const index = Math.floor(Math.random() * holes.length);
-        holes.forEach(hole => hole.innerHTML = '');
-        const poop = document.createElement('div');
-
-        let emoji = '💩';
-        
-
-        poop.innerHTML = emoji;
-        poop.style.cursor = 'pointer';
-        poop.style.fontSize = '60px';
-        holes[index].appendChild(poop);
-
-        poop.addEventListener('click', () => {
-          score++;
-          scoreDisplay.innerText = `Score: ${score}`;
-          holes[index].innerHTML = '';
-        });
-      }
-
-      function saveScoreToSheet(playerName, score) {
-        const params = new URLSearchParams();
-        params.append('playerName', playerName);
-        params.append('score', score);
-
-        fetch(sheetURL + "?" + params.toString())
-          .then(response => response.text())
-          .then(data => {
-            console.log('Score saved successfully:', data);
-          })
-          .catch(error => {
-            console.error('Error saving score:', error);
-          });
-      }
-
-      function generateCertificate(name, score) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        doc.setFontSize(24);
-        doc.text("Certificate of Achievement", 20, 30);
-        doc.setFontSize(16);
-        doc.text(`Presented to: ${name}`, 20, 50);
-        doc.text(`For smashing ${score} poops!`, 20, 60);
-        doc.text("You're officially a Poop Pro!", 20, 75);
-        doc.text("Visit allpawsondeck.org to adopt a pup!", 20, 90);
-
-        doc.save("poop-certificate.pdf");
-      }
-
-      function endGame(name) {
-        clearInterval(interval);
-        clearInterval(poopInterval);
-        gameContainer.innerHTML = '';
-        gameContainer.style.display = 'none';
-        timerDisplay.innerText = "Game Over!";
-
-        const result = document.createElement('div');
-        result.className = 'result';
-        result.innerHTML = `<strong>${name}'s Final Score: ${score}</strong>`;
-        document.body.appendChild(result);
-
-        saveScoreToSheet(name, score);
-
-        const message = document.createElement('p');
-        message.className = 'result';
-        if (score > 25) {
-          confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
-          message.innerHTML = "<strong>Great job! You are a Poop pro!<br>You are ready to adopt a puppy!<br><a href='https://www.allpawsondeck.org' target='_blank'>Check out our available puppies at allpawsondeck.org</a></strong>";
-        } else {
-          message.innerHTML = "<strong>If you can't keep up with the poop, consider an adult dog 😉<br><a href='https://www.allpawsondeck.org' target='_blank'>Check out our amazing house-trained dogs at allpawsondeck.org</a></strong>";
-        }
-        document.body.appendChild(message);
-
-        const fact = document.createElement('p');
-        fact.className = 'result';
-        fact.innerText = `🐾 Did you know? ${funFacts[Math.floor(Math.random() * funFacts.length)]}`;
-        document.body.appendChild(fact);
-
-        const certButton = document.createElement('button');
-        certButton.className = 'cert-btn';
-        certButton.innerText = "Download Certificate";
-        certButton.onclick = () => generateCertificate(name, score);
-        document.body.appendChild(certButton);
-
-        if (!dogDisplayed) {
-          dogDisplayed = true;
-          fetch("https://b4e0cd8f-0a27-4082-b709-20711e8e7772.usrfiles.com/ugd/b4e0cd_9fc68875c0fb4ec585f73032e51fa764.txt")
-  .then(res => res.json())
-  .then(dogs => {
-    const dogGrid = document.createElement('div');
-    dogGrid.id = 'dogGrid';
-    dogGrid.style.display = 'flex';
-    dogGrid.style.flexWrap = 'wrap';
-    dogGrid.style.justifyContent = 'center';
-    dogGrid.style.gap = '12px';
-    document.body.appendChild(dogGrid);
-
-    dogs.forEach(dog => {
-      const card = document.createElement('div');
-      card.style.background = '#fff';
-      card.style.color = '#000';
-      card.style.borderRadius = '12px';
-      card.style.padding = '12px';
-      card.style.width = '200px';
-      card.style.boxShadow = '2px 2px 8px rgba(0,0,0,0.3)';
-
-      const img = document.createElement('img');
-      img.src = dog.image;
-      img.alt = dog.name;
-      img.style.width = '100%';
-      img.style.borderRadius = '8px';
-
-      const name = document.createElement('h4');
-      name.innerText = dog.name;
-
-      const link = document.createElement('a');
-      link.href = dog.link;
-      link.innerText = 'Adopt Me';
-      link.target = '_blank';
-      link.style.display = 'inline-block';
-      link.style.marginTop = '6px';
-
-      card.appendChild(img);
-      card.appendChild(name);
-      card.appendChild(link);
-      dogGrid.appendChild(card);
-            });
-      })
-  
-    .catch(err => console.error("Dog gallery load error:", err));
-  }
-  }
-</script>
-</body>
+    </script>
+  </body>
 </html>
